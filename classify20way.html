@@ -1,0 +1,174 @@
+<!--
+Basic template for a Turk experiment.
+-->
+<html>                                                                  
+<head>
+<link rel="stylesheet" type="text/css" href="css/canvas.css" />                                                                    
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="jquery.url.js"></script>
+<script type="text/javascript" src="extend_jquery.js"></script>
+<script type="text/javascript" src="image_preloader.js"></script>
+<script type="text/javascript" src="taskutil.js"></script>
+<script type="text/javascript" src="super_task.js"></script>
+<script type="text/javascript" src="classification.js"></script>
+<script type="text/javascript" src="exclude.js"></script>
+<script type="text/javascript" src="classify20way.js"></script>
+</head>
+<body>
+
+<!-- PREAMBLE -->
+<span id="pre"></span>
+
+<!-- INSTRUCTIONS -->
+<DIV id="instruct"  style="" class="task_section">
+<div align="center">
+<h3>Instructions</h3>
+</div>
+<p>Please read these instructions carefully. You will be quizzed on their content before the task begins.</p>
+
+<p>	The display below shows some handwritten characters that you already know ('b' and 'd'). You will see a series
+	of displays like this, but with handwritten characters from foreign alphabets. Given the "target character" at the top of
+	the display, <b>your job is to pick the image that shows the same character</b>.</p>
+	
+<div align='center'>
+	<table>
+		<tr>
+			<td>
+				<center><img id='train_b' width="55" height="55" border="1" src='images_classif_demo/latin_train2.png'></center>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<center>Target character</center>
+			</td>
+		</tr>
+	</table>
+	<br>Click the image below that shows the same character.
+	<table>
+		<tr>
+			<td>
+				<center><img id='test_b' width="55" height="55" border="1" src='images_classif_demo/latin_test2.png'></center>
+			</td>
+			</td>
+			<td>
+				<center><img id='test_d' width="55" height="55" border="1" src='images_classif_demo/latin_test4.png'></center>
+			</td>
+			</td>
+		</tr>
+	</table>
+</div>
+	
+<p> The correct response is to click the left image of the 'b'. You will see <span class="ntrials">N</span> displays like this,
+	each containing <span class="nopts">M</span> different choice images. Please take your time and answer as accurately as you can. 
+	<span id="feedback_insturct">You will receive feedback after every response.</span> Your overall accuracy will be displayed at the end. After you click an image,
+	you will have to click the "Confirm choice" button before the response is entered. 	
+</p>
+
+<div style="clear: both;">
+</div>
+
+<p><b>Images loaded: <span id="pload">0</span> percent.</b></p>
+<div align="center" id="to_quiz" style="display:none;">
+	<button onclick="task.start_quiz();">Continue to instructions quiz</button>
+</div>
+<div id="return_exp" style="display:none;">
+	Please contact Brenden Lake at <a href="mailto:brenden@mit.edu">brenden@mit.edu</a> with any questions.
+	<br><br><div align="center" ><button onclick="task.return_to_exp();">Return to experiment</button></div>
+</div>
+
+</DIV>
+
+<!-- INSTRUCTIONS TEST -->
+<DIV id="instruct_test" style="display:none;" class="task_section">
+<FORM>
+<b>Instructions quiz.</b><br><br>
+Most displays show characters from <br>
+<input type="radio" name="q1" value="0" class="qq">the English alphabet<br>
+<input type="radio" name="q1" value="0" class="qq">the Greek alphabet<br>
+<input type="radio" name="q1" value="1">a foreign alphabet<br><br>
+
+Which is more important?<br>
+<input type="radio" name="q2" value="0" class="qq">speed<br>
+<input type="radio" name="q2" value="1">accuracy<br><br>
+
+How many choices will there be in each display?<br>
+<input type="radio" name="q3" value="0" class="qq">5<br>
+<input type="radio" name="q3" value="0">10<br>
+<input type="radio" name="q3" value="1"><span class="nopts">M</span><br>
+</FORM>
+
+<button onclick="task.check_quiz();">Proceed to task.</button>
+</DIV>
+
+<!-- EXPERIMENT SECTION -->
+<DIV id="exp"  style="display:none;" class="task_section">
+<div align="center">
+<span id="header"></span><br><br>
+</div>
+<div id="screen" align="center" style="">
+	<table border="0">
+	<tr>
+		<td><center>Target character</center></td>
+	</tr>
+	<tr>	
+		<div id="itest"></div>
+	</tr>
+	</table>
+	<br>
+	Click the image below that shows the same character.
+	<br>
+	<span id="accept_button" style="display:none;"><button onclick="task.accept_choice();">Confirm choice</button></span>
+	<span id="next_button" style="display:none;"><button onclick="task.next_trial();">Next display</button></span>
+	<br><span id="message"></span><br>
+	<div id="itrain"> </div>
+</div>
+<br><br><center><button onclick="task.review_instructions();">Review instructions</button></center>
+</DIV>
+
+<!-- SURVEY SECTION -->
+<DIV id="survey" style="display:none;" class="task_section">
+    
+    <b>Your accuracy was <span id="acc">N</span> percent correct.</b><br><br>
+    
+    Could you see all of the image choices without scrolling? (required)<br>
+    <input type="radio" name="survey_radio_scroll" value="yes" class="survey_radio">Yes
+    <input type="radio" name="survey_radio_scroll" value="no">No<br><br>
+    
+    What country do you currently reside in? (required)<br>
+    <input type="text" id="survey_txt_country" class="survey_txt"><br><br>
+
+	If you have more than one response to any of the following questions, please separate your responses by commas (,).
+	If you have no response, leave the text box blank.<br>
+	What is your native language? (required) <input type="text" id="survey_txt_native_lang" class="survey_txt"><br>
+	What other languages can you speak and write? <input type="text" id="survey_txt_write_lang" class="survey_txt"><br>
+	What other languages can you speak but not write? <input type="text" id="survey_txt_speak_lang" class="survey_txt"><br><br>
+    
+    Write the names of any alphabets you recognized, in this HIT, besides English/Latin (required):
+    <input type="text" id="survey_txt_recognized" class="survey_txt"><br><br>
+    
+    Were there any technical problems with the website? (required)<br>
+    <input type="radio" name="survey_radio_trouble" value="yes" class="survey_radio">Yes
+    <input type="radio" name="survey_radio_trouble" value="no">No<br>
+    If yes, please describe the problem as specifically as you can:<br>
+    <textarea id="survey_txt_trouble" rows="5" cols="50" class="survey_txt"></textarea><br><br>
+    
+    Do you have any general comments? (optional)<br>
+    <textarea id="survey_txt_comments" rows="5" cols="50" class="survey_txt"></textarea><br><br>
+
+<div id="check_survey" style="">
+	<button onclick="task.survey_finished();">Check survey</button>	
+</div>
+
+<div id="turk_form" style="display:none;">
+	
+	<form name="myform" id="myform" action="" method="POST">
+    	<input id="myid"     type="hidden" name="assignmentId" value="">
+    	<input id="data"     type="hidden" name="data" value="">
+    	<input type="submit" name="mysubmit" value="Submit">
+	</form>
+	
+</div>
+</DIV>
+
+</body>                                                                 
+</html>
